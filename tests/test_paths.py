@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from tree2tag.core.paths import enumerate_video_files
+from dir2tag.core.paths import enumerate_video_files
 
 
 def test_enumerate_video_files(tmp_path: Path) -> None:

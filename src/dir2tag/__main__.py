@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from tree2tag.core.paths import enumerate_video_files
+from dir2tag.core.paths import enumerate_video_files
 
 
 def main(argv: list[str] | None = None) -> int:

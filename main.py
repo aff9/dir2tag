@@ -7,7 +7,17 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from tree2tag.core.paths import enumerate_video_files
+from pathlib import Path as _Path
+
+
+# Ensure src/ is on sys.path so the package can be imported when running
+# `uv run main.py ...` from the repository root.
+_project_root = _Path(__file__).resolve().parents[0]
+_src = str(_project_root / "src")
+if _src not in sys.path:
+    sys.path.insert(0, _src)
+
+from dir2tag.core.paths import enumerate_video_files
 
 
 def main(argv: list[str] | None = None) -> int:
