@@ -18,20 +18,42 @@ if _src not in sys.path:
     sys.path.insert(0, _src)
 
 from dir2tag.core.paths import enumerate_video_files
+from dir2tag.core.tags import folder_name_to_tags
+from dir2tag.io.exporters import write_jsonl
+import argparse
+from typing import Iterable, Mapping
+
+
+def _iter_records(root: Path, include_filename: bool = False) -> Iterable[Mapping[str, object]]:
+    for p in enumerate_video_files(root):
+        rel = None
+        try:
+            rel = p.relative_to(root)
+        except Exception:
+            rel = p
+
+        folder = str(rel.parent) if rel.parent else ""
+        tags = folder_name_to_tags(folder)
+        if include_filename:
+            tags += folder_name_to_tags(p.name)
+
+        yield {"relative_path": str(rel), "tags": tags}
 
 
 def main(argv: list[str] | None = None) -> int:
-    argv = list(argv or sys.argv[1:])
-    if not argv:
-        print("Usage: python main.py <root>")
-        return 2
+    parser = argparse.ArgumentParser(description="dir2tag Stage1/2 runner")
+    parser.add_argument("root", help="root directory to scan")
+    parser.add_argument("--jsonl", help="write JSONL to PATH", default=None)
+    parser.add_argument("--include-filename", help="also include filename tokens as tags", action="store_true")
+    args = parser.parse_args(argv)
 
-    root = Path(argv[0])
-    for p in enumerate_video_files(root):
-        try:
-            print(p.relative_to(root))
-        except Exception:
-            print(p)
+    root = Path(args.root)
+
+    if args.jsonl:
+        write_jsonl(_iter_records(root, include_filename=args.include_filename), Path(args.jsonl))
+    else:
+        for rec in _iter_records(root, include_filename=args.include_filename):
+            print(rec["relative_path"])
 
     return 0
 
