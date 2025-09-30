@@ -1,4 +1,4 @@
-"""Core utilities for tree2tag."""
+"""Core utilities for dir2tag."""
 
 from . import paths
 

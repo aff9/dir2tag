@@ -1,6 +1,6 @@
-"""Command line entrypoint for tree2tag Stage1.
+"""Command line entrypoint for dir2tag Stage1.
 
-Usage: python -m tree2tag <root>
+Usage: python -m dir2tag <root>
 This small runner prints relative paths (to the given root) of discovered videos.
 """
 from __future__ import annotations
@@ -13,7 +13,7 @@ from dir2tag.core.paths import enumerate_video_files
 def main(argv: list[str] | None = None) -> int:
     argv = list(argv or sys.argv[1:])
     if not argv:
-        print("Usage: python -m tree2tag <root>")
+        print("Usage: python -m dir2tag <root>")
         return 2
 
     root = Path(argv[0])

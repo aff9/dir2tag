@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Path utilities for tree2tag - Stage1.
+"""Path utilities for dir2tag - Stage1.
 
 Provides a small, well-documented function to enumerate video files
 under a root directory. This is intentionally minimal and has no

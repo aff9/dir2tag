@@ -1,7 +1,7 @@
 """Convenience runner for Stage1.
 
 Run as: python main.py <root>
-This mirrors the behavior of ``python -m tree2tag`` for Stage1.
+This mirrors the behavior of ``python -m dir2tag`` for Stage1.
 """
 from __future__ import annotations
 

@@ -42,13 +42,9 @@ windowsエクスプローラーの階層構造を基に、ファイルタグを�
 | `--jsonl PATH` | No | JSONL 形式で出力 | `--jsonl out/tags.jsonl` | Stage4 で対応 |
 | `--csv PATH` | No | CSV 形式で出力 | `--csv out/tags.csv` | Stage4 |
 | `--sidecar` | No | 各ファイルに `<name>.tags.json` を生成 | `--sidecar` | Stage4 |
-| `--include-filename` | No | ファイル名トークンもタグ化 | `--include-filename` | Stage4 |
 | `--no-date` | No | 日付タグを抑制 | `--no-date` | Stage4 (Stage3の機能を制御) |
 | `--limit N` | No | 処理対象件数の上限 (デバッグ向け) | `--limit 100` | Stage4 |
 | `--meta` | Optional | ffprobe で動画メタ取得 | `--meta` | Stage6 |
-| `--signature` | Optional | ffmpeg signature でフィンガープリント生成 | `--signature` | Stage7 |
-
-CLI は `main.py` から開始し、Stage4 で `dir2tag/cli.py` に移す予定。
 
 ### サイドカーフォーマット
 
@@ -70,14 +66,9 @@ TagSpaces が推奨するサイドカー形式（`.ts.json`）に合わせる。
     {
       "title": "design",
       "type": "label"
-    }
-  ],
   "customMeta": {
     "source": "dir2tag",
     "relativePath": "Projects/ClientA/Design/logo.mp4"
-  },
-  "media": {
-    "duration": 12.345,
     "width": 1920,
     "height": 1080,
     "codec": "h264"
