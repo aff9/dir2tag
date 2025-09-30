@@ -1,4 +1,4 @@
-# tree2tag
+# dir2tag
 
 ## 概要
 
@@ -16,13 +16,13 @@ windowsエクスプローラーの階層構造を基に、ファイルタグを�
 
 | ステージ | 主目的 | 主なモジュール/メソッド | 期待する出力 | 備考 |
 |-----------|---------|---------------------------|----------------|------|
-| Stage1 | 動画ファイル列挙 | `tree2tag/core/paths.py`: `enumerate_video_files(root: Path) -> Iterator[Path]`<br>`main.py`: `main(argv) -> int` | 標準出力に相対パス一覧 | 最小依存 (標準ライブラリのみ) |
-| Stage2 | パス→タグ変換 | `tree2tag/core/tag_rules.py`: `normalize_tag(text: str) -> Optional[str]`<br>`tree2tag/core/tag_rules.py`: `path_to_tags(relative_path: Path) -> list[str]` | JSONL 行 `{"relative_path": str, "tags": [...]}` | relative_pathはフルパス, サイドカー生成はまだ行わない |
-| Stage3 | 日付タグと重複排除 | `tree2tag/core/date_rules.py`: `extract_date_tags(path: Path) -> list[str]`<br>`tree2tag/core/records.py`: `build_record(...)` | JSONL | `path.stat().st_ctime`（必要なら `st_mtime`）から年月日タグを生成 |
-| Stage4 | CLI 拡張・エクスポート | `tree2tag/cli.py`: `build_parser()`, `run(args)`<br>`tree2tag/io/exporters.py`: `write_jsonl`, `write_csv`, `write_sidecar` | `--jsonl`, `--csv`, `--sidecar` オプション対応 | `argparse` とファイル出力処理 |
+| Stage1 | 動画ファイル列挙 | `dir2tag/core/paths.py`: `enumerate_video_files(root: Path) -> Iterator[Path]`<br>`main.py`: `main(argv) -> int` | 標準出力に相対パス一覧 | 最小依存 (標準ライブラリのみ) |
+| Stage2 | パス→タグ変換 | `dir2tag/core/tag_rules.py`: `normalize_tag(text: str) -> Optional[str]`<br>`dir2tag/core/tag_rules.py`: `path_to_tags(relative_path: Path) -> list[str]` | JSONL 行 `{"relative_path": str, "tags": [...]}` | relative_pathはフルパス, サイドカー生成はまだ行わない |
+| Stage3 | 日付タグと重複排除 | `dir2tag/core/date_rules.py`: `extract_date_tags(path: Path) -> list[str]`<br>`dir2tag/core/records.py`: `build_record(...)` | JSONL | `path.stat().st_ctime`（必要なら `st_mtime`）から年月日タグを生成 |
+| Stage4 | CLI 拡張・エクスポート | `dir2tag/cli.py`: `build_parser()`, `run(args)`<br>`dir2tag/io/exporters.py`: `write_jsonl`, `write_csv`, `write_sidecar` | `--jsonl`, `--csv`, `--sidecar` オプション対応 | `argparse` とファイル出力処理 |
 | Stage5 | テスト導入 | `tests/test_tag_rules.py` など | pytest によるユニットテスト | 必須ケース: タグ正規化 / 日付抽出 |
-| Stage6 (任意) | 動画メタ取得 | `tree2tag/core/meta.py`: `probe_video(path: Path) -> VideoMeta` | JSONL, メタフィールド付与 (duration, width など) | ffprobe 依存, Stage2で作成したjsonに追加|
-| Stage7 (任意) | 類似判定 | `tree2tag/core/similarity.py`: `compute_signature(path: Path) -> Signature` | ロバストフィンガープリント出力 | ffmpeg signature / TMK+PDQF |
+| Stage6 (任意) | 動画メタ取得 | `dir2tag/core/meta.py`: `probe_video(path: Path) -> VideoMeta` | JSONL, メタフィールド付与 (duration, width など) | ffprobe 依存, Stage2で作成したjsonに追加|
+| Stage7 (任意) | 類似判定 | `dir2tag/core/similarity.py`: `compute_signature(path: Path) -> Signature` | ロバストフィンガープリント出力 | ffmpeg signature / TMK+PDQF |
 
 ### 進め方メモ
 
@@ -48,7 +48,7 @@ windowsエクスプローラーの階層構造を基に、ファイルタグを�
 | `--meta` | Optional | ffprobe で動画メタ取得 | `--meta` | Stage6 |
 | `--signature` | Optional | ffmpeg signature でフィンガープリント生成 | `--signature` | Stage7 |
 
-CLI は `main.py` から開始し、Stage4 で `tree2tag/cli.py` に移す予定。
+CLI は `main.py` から開始し、Stage4 で `dir2tag/cli.py` に移す予定。
 
 ### サイドカーフォーマット
 
@@ -73,7 +73,7 @@ TagSpaces が推奨するサイドカー形式（`.ts.json`）に合わせる。
     }
   ],
   "customMeta": {
-    "source": "tree2tag",
+    "source": "dir2tag",
     "relativePath": "Projects/ClientA/Design/logo.mp4"
   },
   "media": {
@@ -88,7 +88,7 @@ TagSpaces が推奨するサイドカー形式（`.ts.json`）に合わせる。
 ```
 
 - `tags`: TagSpaces が解釈するタグ一覧。`title` は必須、`type` は label/flag など。
-- `customMeta`: tree2tag 独自メタ（相対パスや生成元）。
+- `customMeta`: dir2tag 独自メタ（相対パスや生成元）。
 - `media`: ffprobe 等で得た動画メタ（Stage6 で付与）。
 - `description` / `annotations`: 未使用時は空のまま保存。
 Stage4 ではこの構造で `.ts.json` を出力する。
