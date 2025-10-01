@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 
 # Ensure src/ is on sys.path so the package can be imported when running
 # `uv run main.py ...` from the repository root.
-_project_root = _Path(__file__).resolve().parents[0]
-_src = str(_project_root / "src")
+_project_root: Path = _Path(__file__).resolve().parents[0]
+_src = str(object=_project_root / "src")
 if _src not in sys.path:
     sys.path.insert(0, _src)
 
@@ -34,18 +34,18 @@ def _iter_records(
     *,
     include_filename: bool = False,
 ) -> Iterable[Mapping[str, object]]:
-    for p in enumerate_video_files(root):
+    for p in enumerate_video_files(root=root):
         try:
             rel = p.relative_to(root)
         except ValueError:
-            rel = p
+            rel: Path = p
 
-        folder = str(rel.parent) if rel.parent else ""
-        tags = folder_name_to_tags(folder)
+        folder: str = str(object=rel.parent) if rel.parent else ""
+        tags: list[str] = folder_name_to_tags(name=folder)
         if include_filename:
-            tags += folder_name_to_tags(p.name)
+            tags += folder_name_to_tags(name=p.name)
 
-        yield {"relative_path": str(rel), "tags": tags}
+        yield {"relative_path": str(object=rel), "tags": tags}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -60,21 +60,21 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
     )
     parser.add_argument(
-        "--include-filename",
+        "--filename",
         help="also include filename tokens as tags",
         action="store_true",
     )
-    args = parser.parse_args(argv)
+    args: argparse.Namespace = parser.parse_args(args=argv)
 
     root = Path(args.root)
 
     if args.jsonl:
         write_jsonl(
-            _iter_records(root, include_filename=args.include_filename),
-            Path(args.jsonl),
+            records=_iter_records(root=root, include_filename=args.include_filename),
+            path=Path(args.jsonl),
         )
     else:
-        for rec in _iter_records(root, include_filename=args.include_filename):
+        for rec in _iter_records(root=root, include_filename=args.include_filename):
             sys.stdout.write(f"{rec['relative_path']}\n")
 
     return 0
