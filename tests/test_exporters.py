@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from pathlib import Path
-from dir2tag.io.exporters import write_jsonl
 import json
+from pathlib import Path
+
+from dir2tag.io.exporters import write_jsonl
 
 
 def test_write_jsonl(tmp_path: Path) -> None:

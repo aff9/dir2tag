@@ -1,12 +1,14 @@
+"""Tag extraction utilities for dir2tag."""
+
 from __future__ import annotations
 
 import re
-from typing import Callable, Iterable, List
+from collections.abc import Callable, Iterable
 
 Extractor = Callable[[str], Iterable[str]]
 
 
-_EXTRACTORS: List[Extractor] = []
+_EXTRACTORS: list[Extractor] = []
 
 
 def register_extractor(fn: Extractor) -> Extractor:
@@ -20,7 +22,7 @@ def clear_extractors() -> None:
     _EXTRACTORS.clear()
 
 
-def folder_name_to_tags(name: str) -> List[str]:
+def folder_name_to_tags(name: str) -> list[str]:
     """Convert a folder name into a list of tags using registered extractors.
 
     The function runs each extractor in registration order and accumulates
@@ -46,17 +48,21 @@ def folder_name_to_tags(name: str) -> List[str]:
 def words_extractor(name: str) -> Iterable[str]:
     """Split on common delimiters and normalize words to lowercase.
 
-    Example: "FC2-PPV-1042868_1 - Pornhub.com.mp4" -> ["fc2", "ppv", "1042868_1", "pornhub.com.mp4"]
+    Example:
+    "AAA-BBB-10428_1 - .mp4" ->
+    ["aaa", "bbb", "10428_1", ".mp4"]
+
     This extractor is intentionally conservative: it doesn't remove numbers or
     punctuation (another extractor can post-process them).
+
     """
     # split on spaces, hyphens, underscores
     parts = re.split(r"[\s_\-]+", name)
-    for p in parts:
-        p = p.strip()
-        if not p:
+    for part in parts:
+        token = part.strip()
+        if not token:
             continue
-        yield p.lower()
+        yield token.lower()
 
 
 @register_extractor

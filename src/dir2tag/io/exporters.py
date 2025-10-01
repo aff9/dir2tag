@@ -1,8 +1,13 @@
+"""Utilities for exporting tag metadata."""
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Iterable, Mapping
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Mapping
 
 
 def write_jsonl(records: Iterable[Mapping[str, object]], path: Path) -> None:

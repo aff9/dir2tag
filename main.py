@@ -31,13 +31,13 @@ from dir2tag.io.exporters import write_jsonl
 
 def _iter_records(
     root: Path,
+    *,
     include_filename: bool = False,
 ) -> Iterable[Mapping[str, object]]:
     for p in enumerate_video_files(root):
-        rel = None
         try:
             rel = p.relative_to(root)
-        except Exception:
+        except ValueError:
             rel = p
 
         folder = str(rel.parent) if rel.parent else ""
@@ -49,6 +49,7 @@ def _iter_records(
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Parse CLI arguments and emit relative paths or JSONL tags."""
     parser = argparse.ArgumentParser(description="dir2tag runner")
     parser.add_argument("root", metavar="ROOT_DIR", help="root directory to scan")
     parser.add_argument(
@@ -74,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
         )
     else:
         for rec in _iter_records(root, include_filename=args.include_filename):
-            print(rec["relative_path"])
+            sys.stdout.write(f"{rec['relative_path']}\n")
 
     return 0
 

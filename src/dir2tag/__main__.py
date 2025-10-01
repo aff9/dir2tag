@@ -3,25 +3,28 @@
 Usage: python -m dir2tag <root>
 This small runner prints relative paths (to the given root) of discovered videos.
 """
+
 from __future__ import annotations
 
 import sys
 from pathlib import Path
+
 from dir2tag.core.paths import enumerate_video_files
 
 
 def main(argv: list[str] | None = None) -> int:
+    """CLI entry point for `python -m dir2tag`."""
     argv = list(argv or sys.argv[1:])
     if not argv:
-        print("Usage: python -m dir2tag <root>")
+        sys.stdout.write("Usage: python -m dir2tag <root>\n")
         return 2
 
     root = Path(argv[0])
     for p in enumerate_video_files(root):
         try:
-            print(p.relative_to(root))
-        except Exception:
-            print(p)
+            sys.stdout.write(f"{p.relative_to(root)}\n")
+        except ValueError:
+            sys.stdout.write(f"{p}\n")
 
     return 0
 

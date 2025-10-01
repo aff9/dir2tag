@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 from dir2tag.core.paths import enumerate_video_files
@@ -16,8 +15,8 @@ def test_enumerate_video_files(tmp_path: Path) -> None:
     non_video = tmp_path / "c.txt"
     non_video.write_text("z")
 
-    found = sorted(str(p.relative_to(tmp_path)) for p in enumerate_video_files(tmp_path))
-    assert found == ["a.mp4", os.path.join("sub", "b.mkv")]
+    found = sorted(p.relative_to(tmp_path) for p in enumerate_video_files(tmp_path))
+    assert found == [Path("a.mp4"), Path("sub") / "b.mkv"]
 
 
 def test_enumerate_with_nonexistent_root(tmp_path: Path) -> None:
