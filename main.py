@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
     )
     args: argparse.Namespace = parser.parse_args(args=argv)
-
+    print(args.root)
     root = Path(args.root)
 
     if args.jsonl:
